@@ -1,0 +1,12 @@
+.search__input{
+    background: transparent;
+    box-shadow: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    outline: none;
+    color: #ffffff;
+}
+.search__btn{
+    background: transparent;
+}

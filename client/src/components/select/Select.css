@@ -1,0 +1,8 @@
+.main__select{
+    background: transparent;
+    height: 30px;
+    color: #8f9293;
+}
+.main__select option{
+    background: transparent;
+}

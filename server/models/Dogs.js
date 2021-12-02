@@ -1,6 +1,6 @@
 // import {Schema, model} from "mongoose";
-import mongoose from 'mongoose'
-const Schema = mongoose.Schema
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 
 const Dogs = new Schema({
@@ -12,5 +12,5 @@ const Dogs = new Schema({
     title : {type: String}
 })
 
-const dogs = mongoose.model('Dogs', Dogs)
-export default dogs
+const dogs = mongoose.model('Dogs', Dogs);
+export default dogs;

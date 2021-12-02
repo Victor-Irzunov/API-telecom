@@ -1,39 +1,78 @@
-import React, {useEffect, useState} from 'react';
-import './MainPage.css'
-import getDataServer from '../../http/index.js';
+import React, {useEffect, useState, useContext, useCallback} from 'react';
+import './MainPage.css';
+import { observer } from "mobx-react-lite";
+import {getDataServer} from '../../http/index.js';
+import {getSearchData} from '../../http/index.js';
+import PaginationPage from "../../components/pagination/PaginationPage";
+import {Context} from "../../index";
+import Search from "../../components/search/Search";
+import Select from "../../components/select/Select";
 
-const MainPage = () => {
-    const [localData, setLocalData] = useState({})
-    const [isLoading, setIsLoading] = useState(true)
+import { Spinner } from "react-bootstrap";
 
-    console.log(localData);
+const MainPage = observer(() => {
+    const { dataStore } = useContext(Context);
+    const [localData, setLocalData] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
+    const [localSeData, setLocalSeData] = useState('');
+    const [isSelect, setIsSelect] = useState(false);
+    const [isReload, setIsReload] = useState(false);
 
     useEffect(() => {
         try{
-            getDataServer()
+            getDataServer(dataStore.page, dataStore.limit)
                 .then(data => {
+                    setIsSelect(false)
                     setLocalData(data)
+                    dataStore.setTotalCount(data.count)
                 })
-                .catch(function (error) {
-                console.log('error: ', error);
+                .catch(error => {
+                    console.log('error: ', error);
                 })
                 .finally(() => {
                     setIsLoading(false)
                 })
+
         } catch(err) {
-            console.log('err: ', err)
+            console.log('err: ', err);
         }
+    }, [isReload, dataStore.page]);
 
-    }, [])
 
-    if(isLoading){
-        return <div>ddd</div>
+    const sendServerSearch = useCallback(str => {
+        getSearchData(str)
+            .then(data => {
+            setLocalSeData(data);
+            dataStore.setTotalCount(data.count);
+
+        })
+            .finally(() => {
+            setIsSelect(true);
+        })
+    },[]);
+
+    if (isLoading) {
+        return <Spinner animation={"grow"} />
     }
 
-
     return (
-        <div className='main'>
-            <div className='main__block'>
+        <div className="main">
+            <div className="main__block">
+                <div className="main__block_header">
+
+                   <Search sendServerSearch={sendServerSearch} />
+
+                    <Select
+                        setLocalSeData={setLocalSeData}
+                        setIsSelect={setIsSelect}
+                        localData={localData}
+                    />
+
+                    <div onClick={() => setIsReload(i=>!i)} className="fa__icon">
+                        <i className="fa fa-undo" aria-hidden="true" />
+                    </div>
+
+                </div>
                 <table>
                     <caption>Copyright © 2021 Victor Irzunov</caption>
                     <thead>
@@ -45,30 +84,28 @@ const MainPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {localData.breeds.map((obj,  count) => {
-                        return localData.dogs.map(el => {
-                            return obj._id === el.breed && (
-                                <tr key={obj._id}>
-                                    <td>{count + 1}</td>
-                                    <td>{el.title}</td>
-                                    <td>
-                                        <img
-                                            src={el.image}
-                                            alt={obj.title}
-                                            className='table__img'
-                                        />
-                                    </td>
-                                    <td>{obj.title}</td>
-                                </tr>
-                            )
-                        })
-
+                    {(!isSelect ? localData : localSeData).data.map((obj,  count) => {
+                        return (
+                            <tr key={obj.obj._id}>
+                                <td>{count + 1}.</td>
+                                <td>{obj.el.title}</td>
+                                <td>
+                                    <img
+                                        src={obj.el.image}
+                                        alt={obj.obj.title}
+                                        className="table__img"
+                                    />
+                                </td>
+                                <td>{obj.obj.title}</td>
+                            </tr>
+                        )
                     })}
                     </tbody>
                 </table>
+                <PaginationPage />
             </div>
         </div>
     );
-};
+});
 
 export default MainPage;
