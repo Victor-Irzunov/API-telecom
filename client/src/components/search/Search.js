@@ -4,7 +4,6 @@ import "./Search.css";
 const Search = memo(({sendServerSearch}) => {
     const [changeInputVal, setChangeInputVal] = useState('');
 
-
     return (
         <div>
             <input

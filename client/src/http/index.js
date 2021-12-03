@@ -23,11 +23,11 @@ export const getSelectData = async (option) => {
     return data;
 };
 
-export const getSearchData = async (searchData) => {
+export const getSearchData = async (searchVal) => {
     const {data} = await axios.get('http://localhost:5000/search',
         {
             params: {
-                searchData
+                searchVal
             }
         }
     );

@@ -56,7 +56,6 @@ router.get('/', async (req, res) => {
         const dataDogsAll = await Dogs.find();
 
         const data = [];
-
         dataBreeds.forEach(obj => {
              dataDogsAll.forEach(el => {
                  if (obj._id.toString() === el.breed.toString()){
@@ -95,10 +94,10 @@ router.get('/select' , async (req, res) => {
 
 router.get('/search' , async (req, res) => {
     try {
-        const {searchData} = req.query;
+        const {searchVal} = req.query;
 
-        const count = await Dogs.find({title: searchData}).count();
-        const dataDogs = await Dogs.find({title: searchData});
+        const count = await Dogs.find({title: searchVal}).count();
+        const dataDogs = await Dogs.find({title: searchVal});
         const dataBreeds = await Breeds.find({_id: dataDogs[0].breed});
 
         const dataDogsCopy = Object.assign(...dataDogs, {});

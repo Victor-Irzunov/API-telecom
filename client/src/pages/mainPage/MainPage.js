@@ -22,21 +22,21 @@ const MainPage = observer(() => {
         try{
             getDataServer(dataStore.page, dataStore.limit)
                 .then(data => {
-                    setIsSelect(false)
-                    setLocalData(data)
-                    dataStore.setTotalCount(data.count)
+                    setIsSelect(false);
+                    setLocalData(data);
+                    dataStore.setTotalCount(data.count);
                 })
                 .catch(error => {
                     console.log('error: ', error);
                 })
                 .finally(() => {
-                    setIsLoading(false)
+                    setIsLoading(false);
                 })
 
         } catch(err) {
             console.log('err: ', err);
         }
-    }, [isReload, dataStore.page]);
+    }, [isReload, dataStore.page, dataStore]);
 
 
     const sendServerSearch = useCallback(str => {
@@ -44,12 +44,11 @@ const MainPage = observer(() => {
             .then(data => {
             setLocalSeData(data);
             dataStore.setTotalCount(data.count);
-
         })
             .finally(() => {
             setIsSelect(true);
         })
-    },[]);
+    },[dataStore]);
 
     if (isLoading) {
         return <Spinner animation={"grow"} />
@@ -68,7 +67,9 @@ const MainPage = observer(() => {
                         localData={localData}
                     />
 
-                    <div onClick={() => setIsReload(i=>!i)} className="fa__icon">
+                    <div onClick={() => setIsReload(i=>!i)}
+                         className="fa__icon"
+                    >
                         <i className="fa fa-undo" aria-hidden="true" />
                     </div>
 
